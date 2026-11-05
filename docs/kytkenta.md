@@ -94,5 +94,4 @@ Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CL
 - **LEDien +V:** 5V-pinni (i1) toimii vain USB-virralla. Akulla käytettäessä sitä ei syötetä.
   3V3 antaa ULN:n kanssa himmeän valon (~1,4 mA / 220 Ω).
 - **Vastus:** 220 Ω on protolevyllä LEDin katodipuolella (a19–a20), ei anodipuolella.
-- **Kiskot:** Kaavio olettaa, että ylä- ja alakiskot ovat samaa verkkoa (+ ja −). Jos levyn
-  kiskot on jaettu, 5V (j1 ↔ +1) ja GND (j2 ↔ −1) pitää yhdistää myös toiselle kiskolle.
+- **Kiskot:** Levyllä on yksi + ja yksi − verkko. Kuvassa ne on piirretty ylös ja alas vain selkeyden vuoksi.

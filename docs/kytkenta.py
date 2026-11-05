@@ -172,7 +172,7 @@ ax.text(-8.7, 17.4, "Yhtenäinen = tehty hyppylanka:\n"
         "  220 Ω a19–a20: LED− (e19) → ULN 1C (b20)\n"
         "Katkoviiva = suunniteltu (CLAUDE.md): GPIO11/12/13/21 → ULN 1B–4B (oranssi),\n"
         "  napit N1–N4 = GPIO1/2/3/10, LED-katodit L1–L4 = ULN 1C–4C (b20–b23)\n"
-        "Kiskojen sijainti on arvio; ylä- ja alakiskot oletetaan samaksi verkoksi (+ ja −).",
+        "Kiskot: vain yksi + ja yksi − verkko; ylä- ja alakisko on piirretty erikseen vain selkeyden vuoksi.",
         fontsize=8.5, va="top", family="monospace")
 ax.set_title("Nopeuspeli – protolevyn kytkentä (yläkuva paneelin suunnasta, rivi a takareunassa)", fontsize=13,
              pad=20)
