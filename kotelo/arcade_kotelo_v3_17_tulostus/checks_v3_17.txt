@@ -1,0 +1,214 @@
+== v3.17 checks ==
+interferences (parts x dummies, dummies x dummies, parts x parts): none
+cable corners [[50.7, 74.4, 52.1], [50.7, 84.2, 5.8], [25.4, 91.1, 5.8], [18.6, 92.9, 25.0]] 
+  bend radii (tangent pts to centre) [12.0, 12.0, 12.0, 12.0]  cable bottom z 3.8 (plate top 3.5 )  coil length mm 910.0
+notch box (x0,x1,y0,y1,z0,z1) [18.86, 29.73, 88.18, 102.1, 2.5, 16.94]  width at back edge 10.87
+coil x shell: 0.0  coil x plate: 0.0  coil-cable gap 0.0
+cable-shell 0.25  cable-plate 0.3  cable-barR 24.91  cable-TD 27.99  cable-keepout4 28.05  cable-battery 28.74
+battery-shell 0.01  battery-plate(ribs) 0.5  battery-solder 20.5  battery-perfboard 25.5  battery-barL 22.62  battery-keepouts [39.51, 39.51, 47.83, 74.24]
+shell-solder 1.61  shell-perfboard 0.0  shell-plate 0.0  shell-barL 0.2  shell-barR 0.2  shell-keepouts [0.01, 0.01, 0.01, 0.01]
+plate-keepouts [1.94, 1.94, 1.94, 1.94]
+back wall at old tie-hole zone: solid fraction 1.0
+battery slide-in path (footprint, z -2..top) x shell: 0.0   battery bottom z 8.3  ribs top z 7.8  nominal gap (foam pad) 0.5
+rib 1: x -55.0..-49.0 y 93.3..98.7 z 3.49..7.80; vertical sweep x shell 0.0 (plate on/off free); rib-shell 0.8; rib under battery footprint overlap 16.2
+rib 2: x -27.0..-21.0 y 93.3..98.7 z 3.49..7.80; vertical sweep x shell 0.0 (plate on/off free); rib-shell 0.8; rib under battery footprint overlap 16.2
+battery x pushed down 0.6 (pad compressed+): x plate 6.48   -> plate stops it
+cable segment in the notch slid back to the outer face (0..14.5 mm): max x shell 0.0
+notch at the bottom edge of the outer wall: open fraction 1.0
+plate back lip under the notch (continuous): plate volume in lip zone 34.605  (full lip there = 34.8 )
+tie lug 1: z 21.0-29.0, front y 82.39, tie 3.6x1.0 through tunnel x shell 0.0; lug volume 450.2 mm3; cable gap 0.25
+tie lug 2: z 30.5-38.0, front y 80.43, tie 3.6x1.0 through tunnel x shell 0.0; lug volume 428.0 mm3; cable gap 0.25
+real buttons @ 270.0 deg interference: none
+      frame face [75.  97.5 76.2] 0.0 deg-from-down 0.1
+      frame face [-75.   97.5  76.2] 0.0 deg-from-down 0.1
+      frame face [-75.    7.5  57.1] 0.0 deg-from-down 0.0
+      frame face [75.   7.5 57.1] 0.0 deg-from-down 0.0
+      frame face [75.   7.5 57.1] 0.0 deg-from-down 0.1
+      frame face [-75.    7.5  57.1] 0.0 deg-from-down 0.1
+panel overhang (>45 deg, off-bed): 304.05 mm2
+      panel face [25.   0.8 71.8] 139.89
+      panel face [-25.    0.4  71.3] 139.89
+      panel face [80.   3.4 71.9] 0.27
+      panel face [80.1  3.6 72. ] 0.27
+      panel face [80.2  3.9 72. ] 0.27
+      panel face [80.3  4.1 72.1] 0.26
+      panel face [-76.1   0.5  71.3] 0.25
+      panel face [-76.3   0.6  71.3] 0.25
+frame overhang faces (>45 deg, off-bed) v3.17 0.0 mm2 + panel 304.0 = 304.0  vs v3.4 one-piece shell 304.0 mm2
+   battery zone x<-5, y>80: v3.17 0.00 mm2   v3.4 0.00 mm2
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.1
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.0
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.0
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.2
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.1
+      face [-75.   97.5  76.2] 0.0 deg-from-down 0.0
+   cable/lug/notch zone x 10..60, y>65: v3.17 0.00 mm2   v3.4 0.00 mm2
+bottom_plate_v3_17.stl watertight True extents [np.float64(162.0), np.float64(102.0), np.float64(7.8)] bed<=220 True
+button_hole_coupon_v3_17.stl watertight True extents [np.float64(40.0), np.float64(40.0), np.float64(3.0)] bed<=220 True
+clamp_bar_L_v3_17.stl watertight True extents [np.float64(10.2), np.float64(47.0), np.float64(3.0)] bed<=220 True
+clamp_bar_R_v3_17.stl watertight True extents [np.float64(20.3), np.float64(49.0), np.float64(7.1)] bed<=220 True
+frame_v3_17.stl watertight True extents [np.float64(162.0), np.float64(117.9), np.float64(85.2)] bed<=220 True
+panel_v3_17.stl watertight True extents [np.float64(162.0), np.float64(104.5), np.float64(12.8)] bed<=220 True
+td_key_x2_v3_17.stl watertight True extents [np.float64(5.2), np.float64(5.5), np.float64(3.0)] bed<=220 True
+test_coupon_v3_17.stl watertight True extents [np.float64(67.3), np.float64(30.4), np.float64(12.8)] bed<=220 True
+keys: [(0.1, 17.68, 0.0), (0.1, 17.68, 0.0)] (dist TD, dist perfboard, x shell)
+shell volume v3.17 172542.2  v3.4 173359.7   TD x shell 0.0
+plate overhang (prints flat, ribs vertical): down-facing off-bed faces 442.59 mm2
+
+== v3.17 USB-C options (same printed parts) ==
+-- option A --
+  interference (rigid parts + cable vs all parts, dummies, buttons, keys, keep-outs; the coil is the cable's own continuation, not checked): none
+  A_adapter   min dist: shell 0.5  plate 71.77  barR 4.42  perfboard 21.55  keepout4 22.95  tdkeys 1.21  TD (mating face) 0.05
+  A_adapter   +0.5 envelope x shell volume: 0.0  (0 = envelope clear)
+  A_plug      min dist: shell 6.79  plate 47.89  barR 12.2  perfboard 31.3  keepout4 25.94  tdkeys 12.9  TD (mating face) 10.22
+  A_plug      +0.5 envelope x shell volume: 0.0  (0 = envelope clear)
+  A_plug_rot  min dist: shell 4.74  plate 47.37  barR 14.7  perfboard 33.8  keepout4 23.54  tdkeys 14.12  TD (mating face) 12.73
+  A_plug_rot  +0.5 envelope x shell volume: 0.0  (0 = envelope clear)
+  cable: shell 0.25  plate 0.3  barR 24.91  TD 27.99  perfboard 41.56  battery 28.74  keepouts [78.89, 50.86, 36.19, 28.05]  coil 0.0
+  route corners [[50.74, 74.4, 52.11], [50.74, 84.24, 5.8], [25.37, 91.11, 5.8], [18.62, 92.94, 25.0]]
+  bend radii [12.0]  fillet tangents (z): [(16.92, 5.8), (5.8, 13.7)]
+  lug 1 (z 21.0-29.0): gap to cable 0.25, to A_adapter 30.45, to A_plug 8.14, to A_plug_rot 6.44
+  lug 2 (z 30.5-38.0): gap to cable 0.25, to A_adapter 22.1, to A_plug 7.18, to A_plug_rot 4.74
+  lowest rigid part z 50.87; lug tops z [29.0, 38.0] -> lugs tie bare cable: True
+-- option B --
+  interference (rigid parts + cable vs all parts, dummies, buttons, keys, keep-outs; the coil is the cable's own continuation, not checked): none
+  B_body      min dist: shell 0.75  plate 72.31  barR 4.81  perfboard 21.62  keepout4 23.27  tdkeys 1.46  TD (mating face) 0.05
+  B_body      +0.5 envelope x shell volume: 0.0  (0 = envelope clear)
+  B_relief    min dist: shell 0.5  plate 70.72  barR 15.44  perfboard 34.71  keepout4 13.77  tdkeys 13.28  TD (mating face) 13.06
+  B_relief    +0.5 envelope x shell volume: 0.0  (0 = envelope clear)
+  cable: shell 0.25  plate 0.3  barR 16.27  TD 14.08  perfboard 35.31  battery 28.74  keepouts [78.89, 50.86, 16.45, 1.31]  coil 0.0
+  route corners [[50.74, 62.5, 79.23], [50.74, 40.98, 74.66], [50.74, 44.98, 55.85], [50.74, 75.72, 45.86], [50.74, 84.24, 5.8], [25.37, 91.11, 5.8], [18.62, 92.94, 25.0]]
+  bend radii [12.0]  fillet tangents (z): [(77.15, 62.92), (62.63, 53.71), (48.0, 39.08), (16.92, 5.8), (5.8, 13.7)]
+  lug 1 (z 21.0-29.0): gap to cable 0.25, to B_body 30.97, to B_relief 34.85
+  lug 2 (z 30.5-38.0): gap to cable 0.25, to B_body 22.65, to B_relief 28.34
+  lowest rigid part z 74.22; lug tops z [29.0, 38.0] -> lugs tie bare cable: True
+  B joins the shared drop line at z 39.08 (above lug 2 top 38.0: True)
+panel underside relief top w -1.42 -> panel skin over the adapter 1.42 mm (panel top w=0)
+B cable between z 17.8 and 39 (lug zone): max deviation from the shared drop line 0.0 mm over 22 samples
+
+== v3.17 exit / back exterior / battery corners ==
+cable gap = lay-in slot under the plane, open from below (plate closes it): x 18.86..29.73 (width 10.87, need >= 4.8), y 88.18..D; plane meets the outer back face at z 4.50 (1.0 above the plate)
+floor plane angle 42.0 deg (overhang needs >= 32.2), z 18.0 at back plate -> 4.5 at bottom edge
+faces in the recess floor plane: [1200.4] (one plane; split only by the slot/cleats)
+sliver faces (<0.5 mm2) in the exit zone: []
+rays from behind reaching the interior: 484, outside the cable slot: 0
+depressions/slits on the flat back face outside the recess: 0 samples
+  bottom-left  corner box         free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  bottom-left  lead path along x  free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  top-left     corner box         free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  top-left     lead path along x  free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3only got 15750/16405 samples!
+
+  bottom-right corner box         free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  bottom-right lead path along x  free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  top-right    corner box         free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+  top-right    lead path along x  free 7x7 full thickness+3 front: shell 0.000  plate 0.000 mm3
+battery retention: shell x battery 0.000; top stop x -45.0..-31.0 above battery top by 0.30; lips z 15.5..45.1 in front (y 91.9) of battery front 92.49; ribs top 7.80 under battery bottom 8.30; rails x -64.3/-11.7 vs battery x -64.00..-12.00
+plate ribs x: [(-55.0, -49.0), (-27.0, -21.0)]  battery x -64.0..-12.0 -> corner clearances 9.0 / 9.0
+
+== v3.17 panel / frame split ==
+volumes: frame 128477 mm3 (159.3 g)  panel 44066 mm3 (54.6 g)  v3.8 shell 172651
+frame x panel overlap 0.0  min gap frame-panel (0 = seated on the rim) 0.0
+corner screw 1: head centre world (-75.0, 4.1, 72.9); axis = panel normal; engagement in pilot 7.0 mm (shank below rim 7.0 mm, pilot depth 11.0); pilot x frame 0.0 (0 = open), 1.2 mm wall around pilot solid fraction 1.000; panel hole x panel 0.0; screw+head x others: none
+   head bbox x -77.80..-72.20 y 0.89..6.87 (body x +-81, y 0..102; 1.2 chamfer); head x panel 0.0
+corner screw 2: head centre world (-75.0, 94.1, 92.0); axis = panel normal; engagement in pilot 7.0 mm (shank below rim 7.0 mm, pilot depth 11.0); pilot x frame 0.0 (0 = open), 1.2 mm wall around pilot solid fraction 1.000; panel hole x panel 0.0; screw+head x others: none
+   head bbox x -77.80..-72.20 y 90.89..96.87 (body x +-81, y 0..102; 1.2 chamfer); head x panel 0.0
+corner screw 3: head centre world (+75.0, 4.1, 72.9); axis = panel normal; engagement in pilot 7.0 mm (shank below rim 7.0 mm, pilot depth 11.0); pilot x frame 0.0 (0 = open), 1.2 mm wall around pilot solid fraction 1.000; panel hole x panel 0.0; screw+head x others: none
+   head bbox x 72.20..77.80 y 0.89..6.87 (body x +-81, y 0..102; 1.2 chamfer); head x panel 0.0
+corner screw 4: head centre world (+75.0, 94.1, 92.0); axis = panel normal; engagement in pilot 7.0 mm (shank below rim 7.0 mm, pilot depth 11.0); pilot x frame 0.0 (0 = open), 1.2 mm wall around pilot solid fraction 1.000; panel hole x panel 0.0; screw+head x others: none
+   head bbox x 72.20..77.80 y 90.89..96.87 (body x +-81, y 0..102; 1.2 chamfer); head x panel 0.0
+bottom-plate pilot top z 14.5  vs corner pilot tip lowest z 57.95
+v3.9 parts removed: frame sleeves, panel bosses, peg (frame volume 128477, panel 44066)
+insertion path (vertical lift of the panel with everything on it, +-0.2 mm lateral margin): rays hitting frame: none (50 bodies)
+test_coupon: 2334 mm3 = 2.89 g PLA, bbox [67.3, 32.4, 12.7]
+button_hole_coupon: 2356 mm3 = 2.92 g PLA, bbox [40.0, 40.0, 3.0]
+button_hole_coupon rim: OD 40.0 vs nut 29.8 / collar 33.5 -> rim beyond collar 3.25 mm
+  test_coupon print pose overhang (down-facing off-bed) 0.00 mm2, watertight True
+  button_hole_coupon print pose overhang (down-facing off-bed) 0.00 mm2, watertight True
+keys fit the coupon guides: key x coupon [0.0, 0.0]
+== protoboard / header stack (reference bodies) ==
+board 81.0 x 55.0 x 1.6; first column centre 3.90 mm from the T-Display end (joint edge 3.00); other end column centre 3.44
+T-Display PCB underside above board top: 2.70 mm; header stack 1 x 2.5 = 2.5 -> diff +0.20
+single 2.5 spacer would need board +0.20 toward panel: ULN top w -2.20 vs panel underside w -3.0 -> COLLIDES
+bar L: min dist to solder cones 47.06 mm, to pins 47.64 mm, overlap 0.0
+bar R: min dist to solder cones 1.8 mm, to pins 2.38 mm, overlap 0.0
+clamp ledge 1.2 mm; nominal gap ledge edge -> cone base edge 1.8 mm
+header plastic x T-Display (components): 0.0  min dist 0.16
+pins x T-Display solid (expected = the pin holes, model has no holes): 0.0
+stack (cones+pins+plastic) x everything: none
+min dist stack -> frame 13.31  -> plate 66.37  -> battery 25.02
+== ULN2803 breakout (approx., from photo) ==
+position: columns 20..28, rows b/h (8 pitches = 20.32 apart), unchanged from v3.11; world bbox x -60.9..-36.9 y 58.5..81.8 z 73.0..82.6
+stack: board top + 2.5 spacer + 1.6 PCB + 2.5 SOIC = 6.6 mm (old envelope 9.0)
+ULN module (pcb, chip, legs, headers, pins, cones) x everything: none
+  min dist ULN -> frame: 15.44
+  min dist ULN -> panel: 1.76
+  min dist ULN -> plate: 63.89
+  min dist ULN -> battery: 22.06
+  min dist ULN -> barL: 6.27
+  min dist ULN -> barR: 49.29
+  min dist ULN -> button keepouts: [18.77, 22.51, 49.96, 85.95]
+== v3.17 detailed protoboard + real headers ==
+protoboard volume 6375 mm3, holes 420 x d1.2, pads d1.8 x 0.035, mounting d3.2 at [(-64.125, 68.5), (9.534999999999997, 68.5)] (spacing 73.66)
+end column centre to board end: TD end 3.90 (pad edge 3.00; Adafruit STEP 3.81 -> pad edge 2.91), other end 3.44
+row edge margin (long sides) 3.37 (Adafruit 50.8 board: 3.81; user ~3.5)
+board top -> TD PCB underside 2.70; carrier 2.5; open pin above carrier 0.16
+TD pins: below board bottom 1.36 mm, above TD PCB top 4.29 mm; tip w -2.86 vs glass top -2.20 / panel underside -3.0
+ULN pins: above ULN PCB top 4.40 mm; tip w -2.86 -> panel underside gap -0.14
+barL: dist to TD pins 47.64, TD fillets 47.06, ULN pins 7.0, ULN fillets 6.42
+barR: dist to TD pins 2.38, TD fillets 1.8, ULN pins 50.64, ULN fillets 50.06
+barL x bottom pads overlap vol 0.000  min dist 1.34
+barR x bottom pads overlap vol 0.000  min dist 1.8
+frame: dist TD pins 11.52, ULN pins 15.44, ULN parts 16.07, protoboard 2.89
+panel: dist TD pins 3.34, ULN pins 2.86, ULN parts 1.76, protoboard 0.0
+plate: dist TD pins 63.36, ULN pins 63.89, ULN parts 69.48, protoboard 63.24
+battery: dist TD pins 22.06, ULN pins 22.06, ULN parts 27.63, protoboard 25.5
+TD top fillets x TD (LCD etc.) vol 0.000; TD carriers x TD 0.000
+rail2 -> row a 7.62 (user ~7, Adafruit 5.08); channel e->f 7.62 (user ~7.5, Adafruit 7.62)
+row_v b 79.930 i 57.070 h 59.610  V_TDC 68.500
+
+== v3.17 measured stack (far surfaces): PB far -> glass 10.8, TD 6.5 ==
+W_GLASS -2.2  TD PCB underside -8.70 (glass-6.5)  PB top -11.40  PB bottom -13.00  PCB-PCB gap 2.70
+STEP display lift 0.12; carrier top -> TD PCB underside 0.16
+  TD pins          -> panel  3.34   overlap 0.000   -> tdisplay 0.24
+  ULN pins         -> panel  2.86   overlap 0.000   -> tdisplay 11.16
+  ULN chip         -> panel  1.76   overlap 0.000   -> tdisplay 15.84
+  ULN legs         -> panel  3.36   overlap 0.000   -> tdisplay 16.36
+  ULN pcb          -> panel  4.26   overlap 0.000   -> tdisplay 9.64
+  ULN top fillets  -> panel  3.46   overlap 0.000   -> tdisplay 10.72
+  TD top fillets   -> panel  3.50   overlap 0.000   -> tdisplay 0.36
+  TD carriers      -> panel  2.65   overlap 0.000   -> tdisplay 0.16
+  ULN carriers     -> panel  5.25   overlap 0.000   -> tdisplay 10.21
+  TD pins x TD-display solids (incl. lifted bracket) vol 0.0
+  panel material over ULN recess centre (probe): 3.00 mm (expect 3.0)
+  battery -> solder zone 20.5  battery -> protoboard 25.5  battery x plate ribs gap unchanged (plate+battery not moved)
+  bar0 thickness w: bbox z 12.71; bar -> panel 0.2
+  bar1 thickness w: bbox z 15.52; bar -> panel 0.2
+
+== v3.17 flipped T-Display header (long end down) ==
+pin w -17.36..-5.86; below PB far surface 4.36; above TD PCB top 1.29
+  TD pins -> frame      11.52  overlap 0.0   TD bottom fillets ->  13.31
+  TD pins -> panel       3.34  overlap 0.0   TD bottom fillets ->   3.74
+  TD pins -> plate      63.36  overlap 0.0   TD bottom fillets ->  66.37
+  TD pins -> clamp_L    47.64  overlap 0.0   TD bottom fillets ->  47.06
+  TD pins -> clamp_R     2.38  overlap 0.0   TD bottom fillets ->   1.80
+  TD pins -> battery    22.06  overlap 0.0   TD bottom fillets ->  25.02
+  TD pins -> usb_plug   25.38  overlap 0.0   TD bottom fillets ->  25.26
+  TD pins -> tdisplay    0.24  overlap 0.0   TD bottom fillets ->   3.24
+  TD pins -> uln        18.16  overlap 0.0   TD bottom fillets ->  18.07
+  TD pins -> uln_parts  18.16  overlap 0.0   TD bottom fillets ->  18.07
+  TD pins -> td_keys    19.68  overlap 0.0   TD bottom fillets ->  21.11
+
+== v3.17 flipped ULN header (long end down), pocket removed ==
+ULN pins: below PB far surface ~4.36; above ULN PCB top 1.40
+  ULN pins -> frame      15.44  overlap 0.0   ULN fillets ->  17.08
+  ULN pins -> panel       2.86  overlap 0.0   ULN fillets ->   3.46
+  ULN pins -> plate      63.89  overlap 0.0   ULN fillets ->  66.90
+  ULN pins -> clamp_L     7.00  overlap 0.0   ULN fillets ->   6.42
+  ULN pins -> clamp_R    50.64  overlap 0.0   ULN fillets ->  50.06
+  ULN pins -> battery    22.06  overlap 0.0   ULN fillets ->  25.02
+  ULN pins -> usb_plug   73.24  overlap 0.0   ULN fillets ->  72.80
+  ULN pins -> tdisplay   11.16  overlap 0.0   ULN fillets ->  10.72
+  ULN chip     -> panel 1.76
+  ULN legs     -> panel 3.36
+  ULN pcb      -> panel 4.26
+  ULN plastic  -> panel 5.25
