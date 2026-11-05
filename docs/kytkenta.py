@@ -122,22 +122,41 @@ wire(xy("a", 28), (28, RAILS["yla+"][0]), "#c62828")        # a28 <-> +28 (ULN C
 wire(xy("j", 28), (28, RAILS["ala-"][0]), "#222")           # j28 <-> -28 (ULN GND)
 
 
-# --- TEHTY: nappi 1 + LED 1 (lamppu/nappi-yksikkö levyn yläpuolella) ---
-from matplotlib.patches import FancyBboxPatch
-ax.add_patch(FancyBboxPatch((2, -9.6), 18, 2.2, boxstyle="round,pad=0.1", fc="#fff3c4", ec="#b8860b", lw=1.5, zorder=3))
-ax.text(11, -8.5, "Nappi 1 + LED 1 (kotelon painike)", ha="center", va="center", fontsize=10, weight="bold",
+# --- TEHTY: nappi 1 + LED 1 (kotelon painike: nappi vasemmalla, lamppu oikealla) ---
+from matplotlib.patches import FancyBboxPatch, Circle, Polygon
+Y0 = -7.4  # liittimien taso
+ax.add_patch(FancyBboxPatch((1.9, -11.0), 19.4, 3.9, boxstyle="round,pad=0.1", fc="#fff8dc", ec="#b8860b", lw=1.5, zorder=3))
+ax.text(11.6, -11.4, "Nappi 1 + LED 1 (sama kotelon painike)", ha="center", va="bottom", fontsize=10, weight="bold",
         color="#6b4e00", zorder=4)
-terms = {"LED+": (5.0, "#c62828"), "GND": (3.0, "#222"), "Nappi": (10.0, "#1565c0"), "LED−": (17.0, "#4a3a66")}
-for name, (tx, tc) in terms.items():
-    ax.plot(tx, -7.4, "o", ms=6, color=tc, zorder=6)
-    ax.text(tx, -7.0, name, ha="center", va="top", fontsize=8, color=tc, zorder=6)
+# -- NAPPI (kytkin) --
+ax.add_patch(FancyBboxPatch((2.2, -10.4), 6.4, 3.0, boxstyle="round,pad=0.05", fc="#dfe9fb", ec="#1565c0", lw=1.2, zorder=3))
+ax.text(5.4, -10.05, "NAPPI (kytkin)", ha="center", va="center", fontsize=9, weight="bold", color="#1565c0", zorder=4)
+ax.plot([3, 3, 4.3], [Y0, -8.3, -8.3], color="#222", lw=2, zorder=5)            # GND-puoli
+ax.plot([4.3, 6.2], [-8.3, -9.2], color="#1565c0", lw=2.2, zorder=5)            # kytkimen vipu
+ax.plot([4.3, 5.9], [-8.3, -8.3], color="#1565c0", lw=0, zorder=5)
+ax.plot([5.9, 7, 7], [-8.3, -8.3, Y0], color="#1565c0", lw=2, zorder=5)         # signaali-puoli
+ax.plot([4.3, 5.9], [-8.3, -8.3], "o", ms=5, color="#1565c0", zorder=6)
+ax.text(3.0, -6.95, "GND", ha="center", va="top", fontsize=8, color="#222", zorder=6)
+ax.text(7.0, -6.95, "signaali", ha="center", va="top", fontsize=8, color="#1565c0", zorder=6)
+# -- LAMPPU (LED) --
+ax.add_patch(FancyBboxPatch((9.7, -10.4), 11.2, 3.0, boxstyle="round,pad=0.05", fc="#ffe9e6", ec="#c62828", lw=1.2, zorder=3))
+ax.text(15.3, -10.05, "LAMPPU (LED)", ha="center", va="center", fontsize=9, weight="bold", color="#c62828", zorder=4)
+ax.plot([12, 12, 14.2], [Y0, -8.4, -8.4], color="#c62828", lw=2, zorder=5)         # anodi
+ax.add_patch(Polygon([[14.2, -9.2], [14.2, -7.6], [16.0, -8.4]], closed=True, fc="#ffd54f", ec="#c62828", lw=1.8, zorder=5))
+ax.plot([16.0, 16.0], [-9.2, -7.6], color="#c62828", lw=2.2, zorder=5)             # katodin palkki
+ax.plot([16.0, 18, 18], [-8.4, -8.4, Y0], color="#4a3a66", lw=2, zorder=5)         # katodi
+for dx in (0.0, 0.9):                                                              # valonsäteet
+    ax.annotate("", xy=(15.9 + dx, -10.0 + 0.1), xytext=(14.9 + dx, -9.1), arrowprops=dict(arrowstyle="->", color="#f9a825", lw=1.6), zorder=5)
+ax.text(12.0, -6.95, "+ (anodi)", ha="center", va="top", fontsize=8, color="#c62828", zorder=6)
+ax.text(18.0, -6.95, "− (katodi)", ha="center", va="top", fontsize=8, color="#4a3a66", zorder=6)
 def cable(tx, ty, target, color):
     ax.plot([tx, target[0]], [ty, target[1]], "-", color=color, lw=2.2, zorder=6, alpha=0.9)
+    ax.plot(tx, ty, "o", ms=6, color=color, zorder=7)
     ax.plot(*target, "o", ms=5, color=color, zorder=8)
-cable(5.0, -7.4, (4, RAILS["yla+"][0]), "#c62828")     # +4  -> LED anodi
-cable(3.0, -7.4, (3, RAILS["yla-"][0]), "#222")        # -3  -> napin toinen jalka
-cable(10.0, -7.4, xy("a", 10), "#1565c0")              # a10 -> napin signaali (b10 = GPIO43)
-cable(17.0, -7.4, xy("e", 19), "#4a3a66")              # e19 -> LED katodi
+cable(3.0, Y0, (3, RAILS["yla-"][0]), "#222")        # -3  -> napin GND
+cable(7.0, Y0, xy("a", 10), "#1565c0")               # a10 -> napin signaali (b10 = GPIO43)
+cable(12.0, Y0, (4, RAILS["yla+"][0]), "#c62828")    # +4  -> LED anodi
+cable(18.0, Y0, xy("e", 19), "#4a3a66")              # e19 -> LED katodi
 # vastus a19-a20 (220 ohm): e19/a19 -solmu -> ULN 1C (b20)
 rx0, rx1, ry = 19, 20, 0
 ax.plot([rx0, rx0 + 0.2], [ry, ry], "-", color="#7a5c00", lw=2.5, zorder=8)
@@ -158,6 +177,6 @@ ax.text(-8.7, 17.4, "Yhtenäinen = tehty hyppylanka:\n"
 ax.set_title("Nopeuspeli – protolevyn kytkentä (yläkuva paneelin suunnasta, rivi a takareunassa)", fontsize=13,
              pad=20)
 ax.set_xlim(-9, 32)
-ax.set_ylim(23.2, -10.2)
+ax.set_ylim(23.2, -11.8)
 fig.savefig("docs/kytkenta.png", dpi=130, bbox_inches="tight")
 print("ok")
