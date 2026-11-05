@@ -33,14 +33,18 @@ nopeuspeli/
 
 ## Hardware-pinnit
 
-| # | LED GPIO | Nappi GPIO |
-|---|----------|------------|
-| 1 | GPIO 11  | GPIO 1     |
-| 2 | GPIO 12  | GPIO 2     |
-| 3 | GPIO 13  | GPIO 3     |
-| 4 | GPIO 21  | GPIO 10    |
+| # | LED GPIO | Nappi GPIO | ULN-kanava |
+|---|----------|------------|------------|
+| 1 | GPIO 1   | GPIO 43    | 1B/1C      |
+| 2 | GPIO 2   | GPIO 18    | 3B/3C      |
+| 3 | GPIO 3   | GPIO 17    | 5B/5C      |
+| 4 | GPIO 10  | GPIO 21    | 7B/7C      |
 
-Napit: active LOW, sisäinen pull-up. LEDit: active HIGH, 220Ω sarjaan.
+LEDit ohjataan ULN2803:n kautta (low-side), LED+ yhteinen +5V, 220 Ω LEDin katodipuolella.
+Protolevyn kytkentä, reikäpaikat ja tehty/tekemättä-tila: `docs/kytkenta.md` ja `docs/kytkenta.png`.
+Huom: `src/main.cpp` ohjaa toistaiseksi vain painiketta 1 (`LED_PIN 1`, `BTN_PIN 43`).
+
+Napit: active LOW, sisäinen pull-up. LEDit: active HIGH (GPIO HIGH → ULN johtaa → LED syttyy).
 
 Näyttö käyttää 8-bittistä rinnakkaisväylää (ei SPI):
 - Data: D0-D7 = GPIO 39-48
