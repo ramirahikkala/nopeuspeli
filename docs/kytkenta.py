@@ -83,42 +83,54 @@ for p, (r, c) in ULN.items():
     dy = -0.55 if r == "b" else 0.62
     ax.text(x, y + (-0.75 if r == "b" else 0.85), f"{p}\n{ULN_NAME[p]}", ha="center", va="center", fontsize=7.5, color="#2a1f40", zorder=6, linespacing=1.0)
 
-# johdot: GPIO -> ULN-sisääntulo (LEDit)
-led = [("GPIO11", 1), ("GPIO12", 2), ("GPIO13", 3), ("GPIO21", 4)]
-colors = ["#ef6c00", "#f9a825", "#d84315", "#6d4c41"]
-for (g, p), c in zip(led, colors):
-    (r1, c1), (r2, c2) = find_td(g), ULN[p]
+
+# --- kiskot (reunakiskot, sijainti arvio: + ja − sekä ylhäällä että alhaalla) ---
+RAILS = {"yla+": (-2.4, "#c62828", "+"), "yla-": (-3.3, "#222", "−"),
+         "ala+": (12.9, "#c62828", "+"), "ala-": (13.8, "#222", "−")}
+for key, (ry, rc, lab) in RAILS.items():
+    ax.plot([1, 30], [ry, ry], "-", color=rc, lw=1, alpha=0.35, zorder=2)
+    for c in range(1, 31):
+        ax.plot(c, ry, "o", ms=2.6, color=rc, alpha=0.5, zorder=2)
+    ax.text(0.2, ry, lab, color=rc, ha="center", va="center", fontsize=10, weight="bold")
+
+# --- SUUNNITELTU (katkoviiva): GPIO -> ULN-sisääntulo, napit, LED-katodit ---
+plan = [("GPIO11", 1), ("GPIO12", 2), ("GPIO13", 3), ("GPIO21", 4)]
+for (g, pn) in plan:
+    (r1, c1), (r2, c2) = find_td(g), ULN[pn]
     x1, y1 = xy(r1, c1)
     x2, y2 = xy(r2, c2)
-    ax.plot([x1, x1 + 0.0, x2], [y1, 6.2 + 0.25 * p, y2], color=c, lw=2, zorder=4, solid_capstyle="round")
-
-# LED-katodit ULN-ulostuloista -> LED- (kaapeli koteloon)
-for n in range(1, 5):
-    p = 19 - n
-    x, y = xy(*ULN[p])
-    ax.annotate(f"LED{n}−", (x, y), (x, -3.4), ha="center", va="bottom", rotation=90, fontsize=9, color="#4a3a66",
-                arrowprops=dict(arrowstyle="-", color="#4a3a66", lw=1.5))
-
-# napit: GPIO -> kaapeli napille (toinen jalka GND)
+    ax.plot([x1, x2], [y1, y2], "--", color="#ef6c00", lw=1.3, alpha=0.55, zorder=3)
 for n, g in enumerate(["GPIO1", "GPIO2", "GPIO3", "GPIO10"], 1):
     x, y = xy(*find_td(g))
-    ax.annotate(f"Nappi{n}", (x, y), (x, 13.0), ha="center", va="top", rotation=90, fontsize=9, color="#1565c0",
-                arrowprops=dict(arrowstyle="-", color="#1565c0", lw=1.5))
+    ax.plot([x, x], [y, 11.9], "--", color="#1565c0", lw=1.3, alpha=0.6, zorder=3)
+    ax.text(x, 12.05, f"N{n}", ha="center", va="top", fontsize=7.5, color="#1565c0")
+for n in range(1, 5):
+    x, y = xy(*ULN[19 - n])
+    ax.plot([x, x], [y, -1.6], "-", color="#4a3a66", lw=1.5, zorder=3)
+    ax.text(x, -1.75, f"L{n}", ha="center", va="bottom", fontsize=7.5, color="#4a3a66")
 
-# GND ULN:lle
-gx, gy = xy(*ULN[9])
-b3x, b3y = xy("b", 3)
-ax.plot([gx, gx, b3x], [gy, 15.3, 15.3], color="#222", lw=1.8, zorder=3)
-ax.plot([b3x, b3x], [15.3, b3y], color="#222", lw=1.8, zorder=3)
-ax.text(14, 15.8, "GND: ULN pin 9 (h28) → T-Display GND (b3)", fontsize=8.5, color="#222", ha="center")
+# --- TEHDYT hyppylangat (yhtenäinen viiva) ---
+def wire(a, b, color, label=None):
+    (x1, y1), (x2, y2) = a, b
+    ax.plot([x1, x2], [y1, y2], "-", color=color, lw=3, zorder=7, solid_capstyle="round")
+    ax.plot([x1, x2], [y1, y2], "o", ms=5, color=color, zorder=8)
 
-ax.text(20, -4.6, "LED+ (220 Ω sarjaan) → +V,  ULN pin 10 COM (b28) → +V tai jätä auki", fontsize=8.5,
-        color="#4a3a66", ha="center")
-ax.text(-8.7, 13.2, "Johdot (värit):\n  GPIO11 → ULN 1B (h20)\n  GPIO12 → ULN 2B (h21)\n  GPIO13 → ULN 3B (h22)\n  GPIO21 → ULN 4B (h23)",
+wire(xy("j", 1), (1, RAILS["ala+"][0]), "#c62828")          # j1  <-> +1  (5V)
+wire(xy("j", 2), (2, RAILS["ala-"][0]), "#222")             # j2  <-> -1  (GND)
+wire(xy("j", 11), xy("i", 20), "#ef6c00")                   # j11 <-> i20 (GPIO1 -> ULN 1B)
+wire(xy("a", 28), (28, RAILS["yla+"][0]), "#c62828")        # a28 <-> +28 (ULN COM)
+wire(xy("j", 28), (28, RAILS["ala-"][0]), "#222")           # j28 <-> -28 (ULN GND)
+
+ax.text(-8.7, 17.4, "Yhtenäinen = tehty hyppylanka:\n"
+        "  j1 ↔ +1 (5V)   j2 ↔ −1 (GND)   j11 ↔ i20 (GPIO1 → ULN 1B)\n"
+        "  a28 ↔ +28 (ULN COM)   j28 ↔ −28 (ULN GND)\n"
+        "Katkoviiva = suunniteltu (CLAUDE.md): GPIO11/12/13/21 → ULN 1B–4B (oranssi),\n"
+        "  napit N1–N4 = GPIO1/2/3/10, LED-katodit L1–L4 = ULN 1C–4C (b20–b23)\n"
+        "Kiskojen sijainti piirretty arviolla.",
         fontsize=8.5, va="top", family="monospace")
 ax.set_title("Nopeuspeli – protolevyn kytkentä (yläkuva paneelin suunnasta, rivi a takareunassa)", fontsize=13,
              pad=20)
 ax.set_xlim(-9, 32)
-ax.set_ylim(16.6, -5.6)
+ax.set_ylim(21.6, -5.7)
 fig.savefig("docs/kytkenta.png", dpi=130, bbox_inches="tight")
 print("ok")
