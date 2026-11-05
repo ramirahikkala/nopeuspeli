@@ -71,6 +71,19 @@ Protolevyn ryhmät: sarakkeessa a–e ovat yhdessä ja f–j yhdessä. Siksi esi
 | +28 ↔ a28 | b28 = **ULN 10 (COM)** | COM → + kisko |
 | −28 ↔ j28 | h28 = **ULN 9 (GND)** | ULN GND → − kisko *(kirjoitit a28, oletan j28:ksi, koska a28 on ULN:n COM-pinnin ryhmässä)* |
 
+### Nappi 1 + LED 1 (valmis)
+
+| Lanka / osa | Solmu | Tarkoitus |
+|---|---|---|
+| vastus 220 Ω, a19 ↔ a20 | a20 on samassa ryhmässä kuin b20 = **ULN 1C** | LED-katodi → vastus → ULN 1C |
+| e19 → lamppu | e19 on samassa ryhmässä kuin a19 | LED− (katodi) |
+| +4 → lamppu | + kisko | LED+ (anodi) |
+| −3 → nappi | − kisko (GND) | napin toinen jalka |
+| a10 → nappi | a10 on samassa ryhmässä kuin b10 = **GPIO43** | napin signaali (`BTN_PIN 43`) |
+
+Virtapiiri: + kisko (5V) → LED → e19 → 220 Ω → ULN 1C → ULN sisällä GND → − kisko.
+ULN 1B (h20) ohjataan GPIO1:llä (j11 ↔ i20).
+
 Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CLAUDE.md`:n pinnitaulukko
 (LEDit 11, 12, 13, 21 ja napit 1, 2, 3, 10) on suunniteltu lopullinen kytkentä.
 
@@ -80,5 +93,6 @@ Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CL
   Tarkista moduulin oma numerointi.
 - **LEDien +V:** 5V-pinni (i1) toimii vain USB-virralla. Akulla käytettäessä sitä ei syötetä.
   3V3 antaa ULN:n kanssa himmeän valon (~1,4 mA / 220 Ω).
-- **Vastuksen paikka:** 220 Ω ei ole tässä kaaviossa protolevyllä. Oletus on, että se on LEDin
-  anodipuolella napin/kotelon kaapelissa.
+- **Vastus:** 220 Ω on protolevyllä LEDin katodipuolella (a19–a20), ei anodipuolella.
+- **Kiskot:** Kaavio olettaa, että ylä- ja alakiskot ovat samaa verkkoa (+ ja −). Jos levyn
+  kiskot on jaettu, 5V (j1 ↔ +1) ja GND (j2 ↔ −1) pitää yhdistää myös toiselle kiskolle.

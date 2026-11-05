@@ -104,7 +104,7 @@ for n, g in enumerate(["GPIO1", "GPIO2", "GPIO3", "GPIO10"], 1):
     x, y = xy(*find_td(g))
     ax.plot([x, x], [y, 11.9], "--", color="#1565c0", lw=1.3, alpha=0.6, zorder=3)
     ax.text(x, 12.05, f"N{n}", ha="center", va="top", fontsize=7.5, color="#1565c0")
-for n in range(1, 5):
+for n in range(2, 5):
     x, y = xy(*ULN[19 - n])
     ax.plot([x, x], [y, -1.6], "-", color="#4a3a66", lw=1.5, zorder=3)
     ax.text(x, -1.75, f"L{n}", ha="center", va="bottom", fontsize=7.5, color="#4a3a66")
@@ -121,16 +121,43 @@ wire(xy("j", 11), xy("i", 20), "#ef6c00")                   # j11 <-> i20 (GPIO1
 wire(xy("a", 28), (28, RAILS["yla+"][0]), "#c62828")        # a28 <-> +28 (ULN COM)
 wire(xy("j", 28), (28, RAILS["ala-"][0]), "#222")           # j28 <-> -28 (ULN GND)
 
+
+# --- TEHTY: nappi 1 + LED 1 (lamppu/nappi-yksikkö levyn yläpuolella) ---
+from matplotlib.patches import FancyBboxPatch
+ax.add_patch(FancyBboxPatch((2, -9.6), 18, 2.2, boxstyle="round,pad=0.1", fc="#fff3c4", ec="#b8860b", lw=1.5, zorder=3))
+ax.text(11, -8.5, "Nappi 1 + LED 1 (kotelon painike)", ha="center", va="center", fontsize=10, weight="bold",
+        color="#6b4e00", zorder=4)
+terms = {"LED+": (5.0, "#c62828"), "GND": (3.0, "#222"), "Nappi": (10.0, "#1565c0"), "LED−": (17.0, "#4a3a66")}
+for name, (tx, tc) in terms.items():
+    ax.plot(tx, -7.4, "o", ms=6, color=tc, zorder=6)
+    ax.text(tx, -7.0, name, ha="center", va="top", fontsize=8, color=tc, zorder=6)
+def cable(tx, ty, target, color):
+    ax.plot([tx, target[0]], [ty, target[1]], "-", color=color, lw=2.2, zorder=6, alpha=0.9)
+    ax.plot(*target, "o", ms=5, color=color, zorder=8)
+cable(5.0, -7.4, (4, RAILS["yla+"][0]), "#c62828")     # +4  -> LED anodi
+cable(3.0, -7.4, (3, RAILS["yla-"][0]), "#222")        # -3  -> napin toinen jalka
+cable(10.0, -7.4, xy("a", 10), "#1565c0")              # a10 -> napin signaali (b10 = GPIO43)
+cable(17.0, -7.4, xy("e", 19), "#4a3a66")              # e19 -> LED katodi
+# vastus a19-a20 (220 ohm): e19/a19 -solmu -> ULN 1C (b20)
+rx0, rx1, ry = 19, 20, 0
+ax.plot([rx0, rx0 + 0.2], [ry, ry], "-", color="#7a5c00", lw=2.5, zorder=8)
+ax.add_patch(Rectangle((rx0 + 0.2, ry - 0.17), 0.6, 0.34, fc="#d9b96c", ec="#7a5c00", lw=1.2, zorder=8))
+ax.plot([rx0 + 0.8, rx1], [ry, ry], "-", color="#7a5c00", lw=2.5, zorder=8)
+ax.plot([rx0, rx1], [ry, ry], "o", ms=4.5, color="#7a5c00", zorder=9)
+ax.text(18.6, ry - 0.0, "220 Ω", ha="right", va="center", fontsize=8, color="#7a5c00", weight="bold")
+
 ax.text(-8.7, 17.4, "Yhtenäinen = tehty hyppylanka:\n"
         "  j1 ↔ +1 (5V)   j2 ↔ −1 (GND)   j11 ↔ i20 (GPIO1 → ULN 1B)\n"
         "  a28 ↔ +28 (ULN COM)   j28 ↔ −28 (ULN GND)\n"
+        "  Nappi 1 + LED 1: +4 → LED+, −3 → GND, a10 → nappi (GPIO43), e19 → LED−\n"
+        "  220 Ω a19–a20: LED− (e19) → ULN 1C (b20)\n"
         "Katkoviiva = suunniteltu (CLAUDE.md): GPIO11/12/13/21 → ULN 1B–4B (oranssi),\n"
         "  napit N1–N4 = GPIO1/2/3/10, LED-katodit L1–L4 = ULN 1C–4C (b20–b23)\n"
-        "Kiskojen sijainti piirretty arviolla.",
+        "Kiskojen sijainti on arvio; ylä- ja alakiskot oletetaan samaksi verkoksi (+ ja −).",
         fontsize=8.5, va="top", family="monospace")
 ax.set_title("Nopeuspeli – protolevyn kytkentä (yläkuva paneelin suunnasta, rivi a takareunassa)", fontsize=13,
              pad=20)
 ax.set_xlim(-9, 32)
-ax.set_ylim(21.6, -5.7)
+ax.set_ylim(23.2, -10.2)
 fig.savefig("docs/kytkenta.png", dpi=130, bbox_inches="tight")
 print("ok")
