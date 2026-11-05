@@ -59,6 +59,21 @@ DIP-18-numerointi: pinni 1 on h20, pinni 9 on h28, pinni 10 on b28 ja pinni 18 o
 Napit ovat active LOW sisäisellä pull-upilla, joten ulkoisia vastuksia ei tarvita.
 LEDit syttyvät, kun GPIO on HIGH (ULN johtaa).
 
+## Nykyiset hyppylangat (tehty levylle)
+
+Protolevyn ryhmät: sarakkeessa a–e ovat yhdessä ja f–j yhdessä. Siksi esim. j1 on samassa solmussa kuin i1 (5V).
+
+| Lanka | Solmu | Tarkoitus |
+|---|---|---|
+| j1 ↔ +1 | i1 = T-Displayn **5V** | 5V → + kisko |
+| j2 ↔ −1 | i2 = T-Displayn **GND** | GND → − kisko *(kirjoitit +1, oletan −1:ksi, muuten 5V olisi oikosulussa GND:n kanssa)* |
+| j11 ↔ i20 | i11 = **GPIO1** ↔ h20 = **ULN 1B** | GPIO1 ohjaa LED1:tä (nykyinen `main.cpp`: `LED_PIN 1`) |
+| +28 ↔ a28 | b28 = **ULN 10 (COM)** | COM → + kisko |
+| −28 ↔ j28 | h28 = **ULN 9 (GND)** | ULN GND → − kisko *(kirjoitit a28, oletan j28:ksi, koska a28 on ULN:n COM-pinnin ryhmässä)* |
+
+Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CLAUDE.md`:n pinnitaulukko
+(LEDit 11, 12, 13, 21 ja napit 1, 2, 3, 10) on suunniteltu lopullinen kytkentä.
+
 ## Avoimet kohdat
 
 - **ULN:n pinninumerointi:** DIP-18:ssa pinni 10 on vastapäätä pinniä 9, eli b28. Pinni 16 olisi b22.
