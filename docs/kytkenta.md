@@ -4,34 +4,33 @@ Kaavio: [`kytkenta.png`](kytkenta.png) (luodaan skriptillä `kytkenta.py`).
 
 ![kytkentä](kytkenta.png)
 
+Piirikaavio (schematic): [`piirikaavio.png`](piirikaavio.png) (skripti `piirikaavio.py`).
+
+![piirikaavio](piirikaavio.png)
+
 ## Tehty ja tekemättä
 
 | | Mitä | Tila |
 |---|---|---|
 | Kiskot | j1 ↔ +1 (5V), j2 ↔ −1 (GND) | ✔ tehty |
 | ULN | a28 ↔ +28 (COM), j28 ↔ −28 (GND) | ✔ tehty |
-| Painike 1 | j11 ↔ i20 (GPIO1 → ULN 1B), vastus a19–a20, e19 → LED−, a10 → nappi (GPIO43) | ✔ tehty |
+| Painike 1 | j11 ↔ i20 (GPIO1 → ULN 1B), vastus a20:ssä + johto suoraan vastuksen toiseen jalkaan → LED− (kutistesukka päällä), a10 → nappi (GPIO43) | ✔ tehty |
 | Haaroituksen runko | +4 → LED+, −3 → nappi GND | ✔ tehty |
-| Painike 2 | j10 ↔ i22 (GPIO2 → ULN 3B), vastus a21–a22, e21 → LED−, a8 → nappi (GPIO18) | ☐ tekemättä |
-| Painike 3 | j9 ↔ i24 (GPIO3 → ULN 5B), vastus a23–a24, e23 → LED−, a7 → nappi (GPIO17) | ☐ tekemättä |
-| Painike 4 | j8 ↔ i26 (GPIO10 → ULN 7B), vastus a25–a26, e25 → LED−, a6 → nappi (GPIO21) | ☐ tekemättä |
+| Painike 2 | j10 ↔ i22 (GPIO2 → ULN 3B), vastus a22 + johto jalkaan → LED−, a8 → nappi (GPIO18) | ☐ tekemättä |
+| Painike 3 | j9 ↔ i24 (GPIO3 → ULN 5B), vastus a24 + johto jalkaan → LED−, a7 → nappi (GPIO17) | ☐ tekemättä |
+| Painike 4 | j8 ↔ i26 (GPIO10 → ULN 7B), vastus a26 + johto jalkaan → LED−, a6 → nappi (GPIO21) | ☐ tekemättä |
 | Haaroittava kaapeli | +V ja GND jaetaan painikkeelta 1 painikkeille 2, 3 ja 4 | ☐ tekemättä |
 
 ### Suunnitelma (painikkeet 2–4)
 
-- **ULN-kanavat 1, 3, 5, 7.** Kanavan 1 vastus on a19–a20, ja sama kuvio toistuu: vastus on aina
-  LED−-solmun (sarakkeet 21, 23, 25) ja ULN-lähdön (sarakkeet 22, 24, 26) välissä. Näin jokaisella vastuksella
-  on vapaa naapurisarake. Parillisia kanavia 2, 4, 6, 8 ei käytetä. Niiden lähdöt (b21, b23, b25) ovat samoissa
-  sarakeryhmissä LED−-solmujen kanssa, mutta lähdöt ovat auki, koska tuloja ei ohjata. Tulot 2B, 4B, 6B, 8B
-  kannattaa kytkeä GND:hen.
+- **ULN-kanavat 1, 3, 5, 7.** Vastus on LEDin johdossa: sen toinen jalka juotetaan a-rivin reikään
+  (a20, a22, a24, a26, ULN-lähdön ryhmä) ja LED−-johto suoraan toiseen jalkaan, kutistesukka päälle.
+  Parillisia kanavia 2, 4, 6, 8 ei käytetä. Tulot 2B, 4B, 6B, 8B kannattaa kytkeä GND:hen.
 - **LEDien GPIO:t:** 1, 2, 3, 10 (kaikki i-rivillä, vierekkäin). Johtimet j-rivin reiästä ULN-sarakkeen i-rivin reikään.
 - **Nappien GPIO:t:** 43, 18, 17, 21 (b-rivi, johdot a-riviin). GPIO44 jätetty pois, koska se on UART0:n RX.
 - **Haaroittava kaapeli:** levylle tulee vain kaksi johtoa (+4 ja −3). LED+ (anodi) ja napin GND ovat kaikilla
   painikkeilla yhteiset, joten ne jaetaan ketjuna painikkeelta toiselle. LED− ei voi olla yhteinen,
-  koska jokainen LED kytketään omalla ULN-kanavallaan. Johtoja levylle on yhteensä 2 + 4 (LED−) + 4 (napit) = 10.
-- **CLAUDE.md:n pinnitaulukko ei vastaa tätä** (LEDit 11, 12, 13, 21 ja napit 1, 2, 3, 10). Päivitä se ja `main.cpp`,
-  kun kytkentä on valmis.
-
+  koska jokainen LED kytketään omalla ULN-kanavallaan (vastuksen kautta).
 
 ## Protolevy
 
@@ -104,13 +103,13 @@ Protolevyn ryhmät: sarakkeessa a–e ovat yhdessä ja f–j yhdessä. Siksi esi
 
 | Lanka / osa | Solmu | Tarkoitus |
 |---|---|---|
-| vastus 220 Ω, a19 ↔ a20 | a20 on samassa ryhmässä kuin b20 = **ULN 1C** | LED-katodi → vastus → ULN 1C |
-| e19 → lamppu | e19 on samassa ryhmässä kuin a19 | LED− (katodi) |
+| vastus 220 Ω, toinen jalka a20:ssä (juotettu) | a20 on samassa ryhmässä kuin b20 = **ULN 1C** | vastus → ULN 1C |
+| johto vastuksen toiseen jalkaan → lamppu | juotettu suoraan vastuksen jalkaan, kutistesukka päällä | LED− (katodi); a19 ja e19 eivät ole käytössä |
 | +4 → lamppu | + kisko | LED+ (anodi) |
 | −3 → nappi | − kisko (GND) | napin toinen jalka |
 | a10 → nappi | a10 on samassa ryhmässä kuin b10 = **GPIO43** | napin signaali (`BTN_PIN 43`) |
 
-Virtapiiri: + kisko (5V) → LED → e19 → 220 Ω → ULN 1C → ULN sisällä GND → − kisko.
+Virtapiiri: + kisko (5V) → LED → johto → 220 Ω (sukalla suojattu) → a20 → ULN 1C → ULN sisällä GND → − kisko.
 ULN 1B (h20) ohjataan GPIO1:llä (j11 ↔ i20).
 
 Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CLAUDE.md`:n pinnitaulukko

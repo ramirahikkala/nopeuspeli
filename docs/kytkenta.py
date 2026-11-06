@@ -36,10 +36,10 @@ ULN_NAME = {1: "1B", 2: "2B", 3: "3B", 4: "4B", 5: "5B", 6: "6B", 7: "7B", 8: "8
 # --- Painikkeet (nappi + lamppu) ---
 # ULN-kanavat 1, 3, 5, 7: jokaisella vastuksella on vapaa naapurisarake (19, 21, 23, 25)
 PAINIKE = [
-    dict(n=1, color="#ef6c00", done=True, led_col=11, uln_col=20, res=19, minus_col=19, btn=("a", 10)),
-    dict(n=2, color="#00897b", done=False, led_col=10, uln_col=22, res=21, minus_col=21, btn=("a", 8)),
-    dict(n=3, color="#8e24aa", done=False, led_col=9, uln_col=24, res=23, minus_col=23, btn=("a", 7)),
-    dict(n=4, color="#d81b60", done=False, led_col=8, uln_col=26, res=25, minus_col=25, btn=("a", 6)),
+    dict(n=1, color="#ef6c00", done=True, led_col=11, uln_col=20, res=20, minus_col=20, btn=("a", 10)),
+    dict(n=2, color="#00897b", done=False, led_col=10, uln_col=22, res=22, minus_col=22, btn=("a", 8)),
+    dict(n=3, color="#8e24aa", done=False, led_col=9, uln_col=24, res=24, minus_col=24, btn=("a", 7)),
+    dict(n=4, color="#d81b60", done=False, led_col=8, uln_col=26, res=26, minus_col=26, btn=("a", 6)),
 ]
 
 RAILS = {"yla+": (-2.4, "#c62828", "+"), "yla-": (-3.3, "#222", "−"),
@@ -192,10 +192,16 @@ for P in PAINIKE:
     tgt = xy(*P["btn"])  # nappi -> a-reikä
     wire(g["sig"], tgt, col, done)
     hole_label(tgt, f"{P['btn'][0]}{P['btn'][1]}", col, dy=-0.62)
-    tgt = xy("e", P["minus_col"])  # LED-miinus -> e-reikä
-    wire(g["minus"], tgt, col, done)
-    hole_label(tgt, f"e{P['minus_col']}", col, dy=0.62)
-    resistor(P["res"], col, done)  # 220 Ω a-rivillä: LED−-solmu <-> ULN-kanava
+    # LED-miinus -> johto -> vastus (juotettu suoraan vastuksen jalkaan, sukka) -> a-reikä (ULN-kanava)
+    ra = xy("a", P["res"])
+    rtop = (ra[0], ra[1] - 1.3)
+    wire(g["minus"], rtop, col, done)
+    ax.add_patch(Rectangle((ra[0] - 0.22, ra[1] - 1.0), 0.44, 0.7, fc="#e8c872" if done else "white", ec=col, lw=2,
+                           ls="-" if done else "--", zorder=8))
+    line([ra, (ra[0], ra[1] - 0.3)], col, done, lw=3)
+    line([(ra[0], ra[1] - 1.0), rtop], col, done, lw=3)
+    dot(ra, col, done, 6)
+    hole_label(ra, f"a{P['res']}", col, dy=0.62)
     # GPIO -> ULN-sisääntulo (kaari rivin j alapuolella; sisäkkäiset kaaret eivät risteä)
     a = xy("j", P["led_col"])
     b = xy("i", P["uln_col"])
@@ -224,18 +230,18 @@ done_txt = (
     "  ✔ a28 ↔ +28        ULN COM → +\n"
     "  ✔ j28 ↔ −28        ULN GND → −\n"
     "  ✔ j11 ↔ i20        GPIO1 → ULN 1B\n"
-    "  ✔ vastus a19–a20   ULN 1C ↔ LED−-solmu\n"
+    "  ✔ vastus a20 + johto suoraan jalkaan (sukka)\n"
     "  ✔ Painike 1: +4 → LED+, −3 → nappi GND,\n"
-    "               a10 → nappi (GPIO43), e19 → LED−"
+    "               a10 → nappi (GPIO43), LED− → vastus"
 )
 todo_txt = (
     "☐ TEKEMÄTTÄ (katkoviiva, tyhjä piste)\n"
-    "  ☐ Painike 2: j10 ↔ i22 (GPIO2 → ULN 3B), vastus a21–a22,\n"
-    "               e21 → LED−, a8 → nappi (GPIO18)\n"
-    "  ☐ Painike 3: j9 ↔ i24 (GPIO3 → ULN 5B), vastus a23–a24,\n"
-    "               e23 → LED−, a7 → nappi (GPIO17)\n"
-    "  ☐ Painike 4: j8 ↔ i26 (GPIO10 → ULN 7B), vastus a25–a26,\n"
-    "               e25 → LED−, a6 → nappi (GPIO21)\n"
+    "  ☐ Painike 2: j10 ↔ i22 (GPIO2 → ULN 3B), vastus a22,\n"
+    "               LED− → vastus, a8 → nappi (GPIO18)\n"
+    "  ☐ Painike 3: j9 ↔ i24 (GPIO3 → ULN 5B), vastus a24,\n"
+    "               LED− → vastus, a7 → nappi (GPIO17)\n"
+    "  ☐ Painike 4: j8 ↔ i26 (GPIO10 → ULN 7B), vastus a26,\n"
+    "               LED− → vastus, a6 → nappi (GPIO21)\n"
     "  ☐ haaroittava kaapeli: +V ja GND 1 → 2 → 3 → 4 (kuvan ylälaita)\n"
     "  Vastukset 220 Ω. Käyttämättömät ULN-tulot 2B, 4B, 6B, 8B → GND (suositus)."
 )
