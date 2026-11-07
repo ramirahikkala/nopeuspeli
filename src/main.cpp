@@ -11,7 +11,7 @@
 //   - väärä nappi        -> peli loppuu
 //   - nappi kun jono on tyhjä -> peli loppuu (liian aikaisin)
 //   - jonossa yli MAX_LAG painamatonta -> peli loppuu (liian jäljessä)
-// Tahti nopeutuu jokaisen syttyneen lampun jälkeen, alarajana MIN_MS.
+// Tahti nopeutuu lineaarisesti: START_MS ensimmäisellä lampulla, MIN_MS lampulla FULL_SPEED_LAMP ja siitä eteenpäin.
 
 #include "Arduino.h"
 #include "TFT_eSPI.h"
@@ -35,9 +35,10 @@ TFT_eSPI tft = TFT_eSPI();
 // ---------- asetukset ----------
 
 static const uint16_t START_MS = 1000;        // ensimmäinen tahti (uusi lamppu joka START_MS)
-static const uint16_t MIN_MS = 250;           // nopein tahti
-static const uint16_t SPEEDUP_PERMILLE = 15;  // tahti nopeutuu näin monta promillea per lamppu (15 = 1,5 %)
+static const uint16_t MIN_MS = 350;           // nopein tahti
+static const uint16_t FULL_SPEED_LAMP = 150;  // tällä lampulla saavutetaan MIN_MS (lineaarinen nopeutus)
 static const uint8_t  ON_PCT = 60;            // lamppu palaa tämän % tahdista, loput on tauko
+static const uint8_t  JITTER_PCT = 20;        // satunnainen heitto: tahti vaihtelee +-JITTER_PCT % perusnopeudesta
 static const uint8_t  MAX_LAG = 4;            // montako lamppua saa olla painamatta
 
 static const uint16_t GREY = 0x8410;
@@ -51,7 +52,9 @@ static GameCore core(MAX_LAG);
 static ButtonFilter filter;   // oletukset: ks. button_filter.h (15/25/100/40 ms)
 
 static uint16_t best = 0;
-static uint16_t interval = START_MS;
+static uint8_t lastTarget = 0;            // edellinen sytytetty lamppu (ei toistoa peräkkäin)
+static uint16_t interval = START_MS;      // nykyisen lampun tahti (ms)
+static uint16_t lampNo = 0;                  // montako lamppua on sytytetty tässä pelissä
 static bool lampLit = false;
 static unsigned long lampOffAt = 0;
 static unsigned long nextLightAt = 0;
@@ -87,18 +90,25 @@ static void drawIdle() {
     }
 }
 
-static void drawPlay() {
-    tft.fillRect(0, 0, 320, 170, TFT_BLACK);
+// Piirtää numeron isolla 7-segmenttifontilla vaakasuunnassa keskelle ja pystysuunnassa
+// alueen [top, top + areaH) keskelle. Koko valitaan suurimmaksi (enintään maxSize), joka mahtuu.
+// Fontti 7: 48 px korkea, numero n. 32 px leveä (kerrotaan koolla).
+static void drawBigNumber(unsigned n, int top, int areaH, int maxSize, uint16_t color) {
+    char buf[12];
+    snprintf(buf, sizeof(buf), "%u", n);
+    int digits = (int)strlen(buf);
+    int size = maxSize;
+    while (size > 1 && (digits * 32 * size > 316 || 48 * size > areaH)) size--;
+    tft.setTextSize(size);
+    tft.setTextColor(color, TFT_BLACK);
+    tft.drawCentreString(buf, 160, top + (areaH - 48 * size) / 2, 7);
     tft.setTextSize(1);
-    tft.setTextColor(GREY, TFT_BLACK);
-    tft.drawCentreString("OIKEIN", 160, 16, 2);
-    char buf[40];
-    snprintf(buf, sizeof(buf), "%u", core.score());
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawCentreString(buf, 160, 46, 7);
-    snprintf(buf, sizeof(buf), "tahti %u ms   jonossa %u/%u", interval, core.pending(), MAX_LAG);
-    tft.setTextColor(core.pending() >= MAX_LAG ? TFT_RED : GREY, TFT_BLACK);
-    tft.drawCentreString(buf, 160, 122, 2);
+}
+
+// Pelin aikana näytöllä on vain pistemäärä, mahdollisimman isona.
+static void drawPlay() {
+    tft.fillScreen(TFT_BLACK);
+    drawBigNumber(core.score(), 0, 170, 2, TFT_WHITE);
 }
 
 static const char *reasonText(GameCore::Result r) {
@@ -110,22 +120,17 @@ static const char *reasonText(GameCore::Result r) {
     }
 }
 
-static void drawGameOver(GameCore::Result r) {
+// Loppunäyttö: "PELI LOPPUI", pistemäärä isona ja ennätys. Syy näkyy vain sarjalokissa.
+static void drawGameOver() {
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(1);
     tft.setTextColor(TFT_RED, TFT_BLACK);
     tft.drawCentreString("PELI LOPPUI", 160, 6, 4);
-    tft.setTextColor(GREY, TFT_BLACK);
-    tft.drawCentreString(reasonText(r), 160, 36, 2);
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%u", core.score());
-    tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawCentreString(buf, 160, 56, 7);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.drawCentreString("oikein", 160, 108, 4);
-    snprintf(buf, sizeof(buf), "Ennatys: %u   paina nappia", best);
-    tft.setTextColor(GREY, TFT_BLACK);
-    tft.drawCentreString(buf, 160, 146, 2);
+    drawBigNumber(core.score(), 38, 100, 2, TFT_GREEN);
+    char buf[24];
+    snprintf(buf, sizeof(buf), "Ennatys: %u", best);
+    tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+    tft.drawCentreString(buf, 160, 142, 4);
 }
 
 // ---------- napit ----------
@@ -184,15 +189,29 @@ static void gameOver(GameCore::Result r) {
     }
     if (core.score() > best) best = core.score();
     state = GAME_OVER;
-    drawGameOver(r);
+    drawGameOver();
     flushButtons();
     lockUntil = millis() + 800;
     Serial.printf("Peli loppui (%s), oikein: %u, ennatys: %u\n", reasonText(r), core.score(), best);
 }
 
 // Sytyttää uuden satunnaisen lampun ja lisää sen jonoon.
+// Lineaarinen tahti: START_MS lampulla 1, MIN_MS lampulla FULL_SPEED_LAMP ja siitä eteenpäin.
+// Lasketaan lampun numerosta, ettei pyöristys kerry.
+static uint16_t paceForLamp(uint16_t lamp) {
+    if (lamp >= FULL_SPEED_LAMP) return MIN_MS;
+    return (uint16_t)(START_MS - (uint32_t)(START_MS - MIN_MS) * (lamp - 1) / (FULL_SPEED_LAMP - 1));
+}
+
 static void lightNext(unsigned long now) {
-    uint8_t target = random(NUM_PADS);           // aidosti satunnainen, sama voi tulla peräkkäin
+    lampNo++;
+    // Heitto lasketaan perusnopeudesta joka lampulle erikseen, joten se ei kerry eikä muuta nopeutuskäyrää.
+    uint16_t base = paceForLamp(lampNo);
+    interval = (uint16_t)((uint32_t)base * (100 + random(-(int)JITTER_PCT, (int)JITTER_PCT + 1)) / 100);
+    // Satunnainen, mutta ei sama lamppu kahdesti peräkkäin: arvotaan muiden joukosta.
+    uint8_t target = random(NUM_PADS);
+    if (lampNo > 1 && target == lastTarget) target = (target + 1 + random(NUM_PADS - 1)) % NUM_PADS;
+    lastTarget = target;
     GameCore::Result r = core.lampLit(target);
     char qs[40];
     queueStr(qs, sizeof(qs));
@@ -206,15 +225,12 @@ static void lightNext(unsigned long now) {
     lampLit = true;
     lampOffAt = now + (unsigned long)interval * ON_PCT / 100;
     nextLightAt = now + interval;
-
-    interval = (uint32_t)interval * (1000 - SPEEDUP_PERMILLE) / 1000;
-    if (interval < MIN_MS) interval = MIN_MS;
-    drawPlay();
 }
 
 static void startGame() {
     core.reset();
     interval = START_MS;
+    lampNo = 0;
     lampLit = false;
     setLeds(0);
     tft.fillScreen(TFT_BLACK);

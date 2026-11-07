@@ -59,14 +59,15 @@ Näyttö käyttää 8-bittistä rinnakkaisväylää (ei SPI):
 
 Lamppu n ja nappi n ovat pari (fyysinen numerointi, ks. pinnitaulukko).
 
-- Lamput syttyvät ja sammuvat nopeutuvalla tahdilla omia aikojaan (aidosti satunnainen, sama voi tulla peräkkäin).
+- Lamput syttyvät ja sammuvat nopeutuvalla tahdilla omia aikojaan (satunnainen, mutta sama lamppu ei syty kahdesti peräkkäin).
   Ne eivät jää palamaan odottamaan painallusta.
 - Pelaajan pitää painaa nappeja samassa järjestyksessä kuin lamput syttyivät. Pelaaja saa jäädä jälkeen:
   syttyneet lamput menevät jonoon, ja painallus täsmää jonon vanhimpaan.
 - Peli loppuu, kun: väärä nappi, nappi ennen kuin yhtään lamppua on painamatta (liian aikaisin), tai
   jonossa on yli `MAX_LAG` (4) painamatonta lamppua (liian jäljessä).
-- Tahti alkaa 1000 ms:sta, nopeutuu 1,5 % per syttynyt lamppu ja pysähtyy 250 ms:iin. Lamppu palaa 60 % tahdista.
-  Asetukset: `START_MS`, `MIN_MS`, `SPEEDUP_PERMILLE`, `ON_PCT`, `MAX_LAG` main.cpp:n alussa.
+- Tahti nopeutuu lineaarisesti: 1000 ms ensimmäisellä lampulla, 350 ms (nopein) 150. lampulla ja siitä eteenpäin
+  (noin 4,4 ms lyhenemä per lamppu). Jokaisen lampun väli vaihtelee satunnaisesti ±20 % perusnopeudesta (`JITTER_PCT`). Lamppu palaa 60 % välistä.
+  Asetukset: `START_MS`, `MIN_MS`, `FULL_SPEED_LAMP`, `ON_PCT`, `MAX_LAG` main.cpp:n alussa.
 - Peli loppuu → LCD näyttää oikeiden painallusten määrän ja ennätyksen (vain RAM:ssa, nollautuu uudelleenkäynnistyksessä)
 - Web UI (WebSocket) ei ole vielä toteutettu
 
@@ -87,7 +88,8 @@ Lamppu n ja nappi n ovat pari (fyysinen numerointi, ks. pinnitaulukko).
 - Sarjamonitorin loki (`pio device monitor`): jokainen lamppu (`LAMPPU n PAALLE`), jokainen painallus
   (`PAINETTU nappi x | odotettiin nappi y | jono [...] | OIKEIN/syy`) sekä suodattimen hylkäämät painallukset
   (`HYLATTY ...`) ja lyhyet piikit (`PIIKKI ...`). Aikaleimat ovat ms pelin alusta.
-- Näytöllä ei näytetä lamppujen tilaa, vain pisteet, tahti ja jonon pituus.
+- Näyttö: pelin aikana vain pistemäärä isona (7-segmenttifontti, koko 2). Tahti, jono ja pelin päättymisen syy näkyvät
+  vain sarjalokissa. Loppunäytössä on "PELI LOPPUI", pistemäärä samalla koolla ja ennätys.
 
 ## Lataus
 
