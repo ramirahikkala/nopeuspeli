@@ -1,3 +1,4 @@
 .pio/
 include/wifi_config.h
 .claude/settings.local.json
+.vscode/
