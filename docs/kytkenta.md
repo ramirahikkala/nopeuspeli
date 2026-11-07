@@ -56,35 +56,37 @@ DIP-18-numerointi: pinni 1 on h20, pinni 9 on h28, pinni 10 on b28 ja pinni 18 o
 
 | Pinni | Reikä | Nimi | Käyttö |
 |---|---|---|---|
-| 1 | h20 | 1B | ← GPIO11 |
-| 2 | h21 | 2B | ← GPIO12 |
-| 3 | h22 | 3B | ← GPIO13 |
-| 4 | h23 | 4B | ← GPIO21 |
-| 5–8 | h24–h27 | 5B–8B | ei käytössä |
-| 9 | h28 | GND | → T-Displayn GND (esim. b3) |
-| 10 | b28 | COM | → +V tai auki (LEDeille ei pakollinen) |
-| 15 | b23 | 4C | → LED4 katodi |
-| 16 | b22 | 3C | → LED3 katodi |
-| 17 | b21 | 2C | → LED2 katodi |
-| 18 | b20 | 1C | → LED1 katodi |
+| 1 | h20 | 1B | ← GPIO1 (LED 1) |
+| 2 | h21 | 2B | ei käytössä → GND |
+| 3 | h22 | 3B | ← GPIO2 (LED 2) |
+| 4 | h23 | 4B | ei käytössä → GND |
+| 5 | h24 | 5B | ← GPIO3 (LED 3) |
+| 6 | h25 | 6B | ei käytössä → GND |
+| 7 | h26 | 7B | ← GPIO10 (LED 4) |
+| 8 | h27 | 8B | ei käytössä → GND |
+| 9 | h28 | GND | → − kisko (GND) |
+| 10 | b28 | COM | → + kisko (a28 ↔ +28) |
+| 12 | b26 | 7C | → vastus a26 → LED 4 katodi |
+| 14 | b24 | 5C | → vastus a24 → LED 3 katodi |
+| 16 | b22 | 3C | → vastus a22 → LED 2 katodi |
+| 18 | b20 | 1C | → vastus a20 → LED 1 katodi |
 
-## Alkuperäinen suunnitelma (korvattu yllä olevalla)
+Parilliset kanavat (2, 4, 6, 8) jätetään käyttämättä. Niiden tulot 2B, 4B, 6B ja 8B kannattaa vetää GND:hen,
+jotta ne eivät kellu.
 
-| Mistä | Mihin |
-|---|---|
-| i7 (GPIO11) | h20 (ULN 1B) |
-| i6 (GPIO12) | h21 (ULN 2B) |
-| i5 (GPIO13) | h22 (ULN 3B) |
-| b6 (GPIO21) | h23 (ULN 4B) |
-| i11 (GPIO1) | Nappi 1, toinen jalka GND:hen |
-| i10 (GPIO2) | Nappi 2, toinen jalka GND:hen |
-| i9 (GPIO3) | Nappi 3, toinen jalka GND:hen |
-| i8 (GPIO10) | Nappi 4, toinen jalka GND:hen |
-| h28 (ULN GND) | b3 (T-Displayn GND) |
-| b20–b23 (ULN 1C–4C) | LED1–LED4 katodit |
-| +V → 220 Ω → LED-anodi | kunkin LEDin anodi |
+## Lopullinen pinnitaulukko (mitattu)
 
-Napit ovat active LOW sisäisellä pull-upilla, joten ulkoisia vastuksia ei tarvita.
+Mitattu `iomap`-ohjelmalla. Numerointi on fyysinen (lamppu/nappi n kotelossa). Se ei vastaa kuvan
+`kytkenta.png` painikenumeroita, jotka seuraavat johdotusjärjestystä.
+
+| # | LED GPIO | ULN-kanava (päätelty kuvasta) | Nappi GPIO |
+|---|---|---|---|
+| 1 | GPIO2 | 3B / 3C | GPIO21 |
+| 2 | GPIO10 | 7B / 7C | GPIO18 |
+| 3 | GPIO3 | 5B / 5C | GPIO17 |
+| 4 | GPIO1 | 1B / 1C | GPIO43 |
+
+Sama taulukko on `CLAUDE.md`:ssä ja `iotest/iotest.cpp`:ssä. Napit ovat active LOW sisäisellä pull-upilla, joten ulkoisia vastuksia ei tarvita.
 LEDit syttyvät, kun GPIO on HIGH (ULN johtaa).
 
 ## Nykyiset hyppylangat (tehty levylle)
@@ -112,10 +114,21 @@ Protolevyn ryhmät: sarakkeessa a–e ovat yhdessä ja f–j yhdessä. Siksi esi
 Virtapiiri: + kisko (5V) → LED → johto → 220 Ω (sukalla suojattu) → a20 → ULN 1C → ULN sisällä GND → − kisko.
 ULN 1B (h20) ohjataan GPIO1:llä (j11 ↔ i20).
 
-Huom: `src/main.cpp` ohjaa vielä yhtä LEDiä (GPIO1) ja nappia GPIO43:lla. `CLAUDE.md`:n pinnitaulukko
-(LEDit 11, 12, 13, 21 ja napit 1, 2, 3, 10) on suunniteltu lopullinen kytkentä.
+Huom: pinnit on määritelty tiedostossa `include/io_pins.h`. Lopullinen kytkentä
+(LEDit GPIO 1, 2, 3, 10 ja napit GPIO 43, 18, 17, 21) on yllä olevassa pinnitaulukossa ja `CLAUDE.md`:ssä.
+
+## IO-testi
+
+`iotest/iotest.cpp` näyttää nappien tilat ja ohjaa LEDejä näytöllä, jotta kytkennän voi tarkistaa silmällä.
+Se ei sisällä pelilogiikkaa. Aja: `pio run -e iotest -t upload && pio device monitor -e iotest`.
+BOOT-nappi (GPIO0) vaihtaa moodia (CHASE, MANUAL, ALL, OFF) ja GPIO14 nopeutta.
+Näytön lamppu kertoo vain ohjatun GPIO-tilan, ei sitä, palaako fyysinen LED.
 
 ## Avoimet kohdat
+
+- **GPIO43** on UART0 TX. Bootissa ROM voi tulostaa siihen, joten nappi 1 voi hetken näyttää painetulta.
+  USB-CDC on päällä, joten ohjelmassa tämä ei haittaa.
+- **GPIO3** on strapping-pinni. Jos laite ei boottaa LED 3 kytkettynä, irrota ensin j9-johto.
 
 - **ULN:n pinninumerointi:** DIP-18:ssa pinni 10 on vastapäätä pinniä 9, eli b28. Pinni 16 olisi b22.
   Tarkista moduulin oma numerointi.
